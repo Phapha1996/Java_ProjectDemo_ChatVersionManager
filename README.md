@@ -1,0 +1,3 @@
+﻿# ChatVersionManager
+一个版本管理系统，为一个安卓大作业做的后台，与安卓的交互采用http与json
+采用SSH的技术

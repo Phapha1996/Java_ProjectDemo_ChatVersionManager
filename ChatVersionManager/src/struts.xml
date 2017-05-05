@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	 <constant name="struts.devMode" value="false" />
+	 <constant name="struts.i18n.encoding" value="UTF-8"/>
+	 <constant name="struts.multipart.maxSize" value="5500000"/>
+
+ 	 <package name="default" namespace="/" extends="struts-default">
+ 	 	<!-- 全局错误页面 -->
+ 	 	<global-results>
+ 	 		<result name="error">/error.jsp</result>
+ 	 	</global-results>
+ 	 	<!-- 全局异常映射 -->
+ 	 	<global-exception-mappings>
+ 	 		<exception-mapping result="error" exception="java.lang.RuntimeException"></exception-mapping>
+ 	 	</global-exception-mappings>
+		<!-- 业务Action -->
+		<action name="resource_*" class="resourceAction" method="{1}">
+			<result name="success">/WEB-INF/jsp/resource_{1}.jsp</result>
+			<!-- 帮助转回全局页面 -->
+			<result name="page" type="chain">
+ 	 			<param name="namespace">/</param>
+ 	 			<param name="actionName">resource_list</param>
+ 	 		</result>
+ 	 		<!-- 上传路径 -->
+			<param name="uploadSaveDir">/WEB-INF/versions</param>
+ 	 		<!-- 上传文件大小控制 -->
+ 	 		<interceptor-ref name="fileUpload"> 
+             <param name="maximumSize">5242880</param>  
+           	</interceptor-ref> 
+           	<interceptor-ref name="defaultStack" />
+		</action>
+		<!-- 下载 -->
+		<action name="download" class="org.fage.controller.ResourceAction" method="download">
+			<!-- 设置文件上传大小 -->
+			<result name="success" type="stream">
+                <param name="contentDisposition">attachment;filename=${resource.name}</param>
+                <param name="inputName">downLoad</param>
+            </result>
+		</action>
+ 	 </package>
+ 	 
+ 	 <package name="android" extends="json-default" namespace="/android">
+ 	 <!-- 全局错误页面 -->
+ 	 	<global-results>
+ 	 		<result name="error">/error.jsp</result>
+ 	 	</global-results>
+ 	 	<!-- 全局异常映射 -->
+ 	 	<global-exception-mappings>
+ 	 		<exception-mapping result="error" exception="java.lang.RuntimeException"></exception-mapping>
+ 	 	</global-exception-mappings>
+		<!-- 安卓端Json -->
+		<action name="json" class="org.fage.controller.ResourceAction" method="androidJson">
+			<result type="json" name="success"></result>
+		</action> 	 
+ 	 </package>
+</struts>
